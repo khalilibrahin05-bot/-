@@ -19,6 +19,14 @@ function App() {
     });
   };
 
+  const handleUpdateIndicatorNotes = (groupIdx: number, indicatorIdx: number, notes: string) => {
+    setIndicatorData(prevData => {
+      const newData = [...prevData.map(group => ({ ...group, indicators: [...group.indicators] }))];
+      newData[groupIdx].indicators[indicatorIdx].notes = notes;
+      return newData;
+    });
+  };
+
   const handleUpdatePlanData = (newPlanData: PlanItem[]) => {
     setPlanData(newPlanData);
   };
@@ -36,7 +44,11 @@ function App() {
           </div>
           <div className="lg:col-span-2 space-y-8">
             <ProgressChart data={indicatorData} />
-            <IndicatorChecklist data={indicatorData} onToggle={handleToggleIndicator} />
+            <IndicatorChecklist 
+              data={indicatorData} 
+              onToggle={handleToggleIndicator} 
+              onUpdateNotes={handleUpdateIndicatorNotes}
+            />
           </div>
         </main>
         <footer className="text-center mt-12 text-sm text-slate-500 dark:text-slate-400">

@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ChartBarIcon } from './icons';
 
@@ -6,7 +5,7 @@ const Header: React.FC = () => {
   return (
     <header className="flex items-center justify-between p-4 bg-white dark:bg-slate-800 rounded-xl shadow-md border border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-4">
-        <div className="p-3 bg-sky-100 dark:bg-sky-900/50 rounded-lg text-sky-600 dark:text-sky-400">
+        <div className="p-3 bg-indigo-100 dark:bg-indigo-900/50 rounded-lg text-indigo-600 dark:text-indigo-400">
           <ChartBarIcon className="w-8 h-8" />
         </div>
         <div>

@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 import { PlanItem, IndicatorGroup } from '../types';
 
@@ -19,8 +18,11 @@ function formatDataForPrompt(planData: PlanItem[], indicatorData: IndicatorGroup
     prompt += "\n--- المؤشرات الدورية ---\n";
     indicatorData.forEach(group => {
         prompt += `\n**${group.category}**\n`;
+        const completed = group.indicators.filter(i => i.completed).length;
+        const total = group.indicators.length;
+        prompt += `(الحالة: ${completed}/${total} مكتمل)\n`;
         group.indicators.forEach(indicator => {
-            prompt += `- ${indicator.text}\n`;
+            prompt += `- ${indicator.text} (${indicator.completed ? 'مكتمل' : 'غير مكتمل'})\n`;
         });
     });
 
@@ -30,14 +32,15 @@ function formatDataForPrompt(planData: PlanItem[], indicatorData: IndicatorGroup
     return prompt;
 }
 
-export const generateSummary = async (planData: PlanItem[], indicatorData: IndicatorGroup[]): Promise<string> => {
+
+export async function* generateSummaryStream(planData: PlanItem[], indicatorData: IndicatorGroup[]): AsyncGenerator<string> {
     if (!process.env.API_KEY) {
         throw new Error("API Key is not configured. Please set the API_KEY environment variable.");
     }
 
     try {
         const prompt = formatDataForPrompt(planData, indicatorData);
-        const response = await ai.models.generateContent({
+        const responseStream = await ai.models.generateContentStream({
             model: 'gemini-2.5-flash',
             contents: prompt,
             config: {
@@ -46,9 +49,12 @@ export const generateSummary = async (planData: PlanItem[], indicatorData: Indic
             }
         });
         
-        return response.text;
+        for await (const chunk of responseStream) {
+            yield chunk.text;
+        }
+
     } catch (error) {
         console.error("Error calling Gemini API:", error);
         throw new Error("An error occurred while communicating with the AI service. Please check the console for details.");
     }
-};
+}

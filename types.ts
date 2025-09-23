@@ -3,6 +3,7 @@ export interface Indicator {
   text: string;
   completed: boolean;
   category?: string;
+  notes?: string;
 }
 
 export interface IndicatorGroup {

@@ -39,7 +39,7 @@ const PerformancePlan: React.FC<PerformancePlanProps> = ({ data, onUpdateData })
           type="text"
           value={editedData[index][field] as string}
           onChange={(e) => handleInputChange(index, field, e.target.value)}
-          className="w-full bg-slate-100 dark:bg-slate-700 p-1 rounded-md border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-500 transition"
+          className="w-full bg-slate-100 dark:bg-slate-700 p-1 rounded-md border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"
         />
       );
     }
@@ -56,13 +56,13 @@ const PerformancePlan: React.FC<PerformancePlanProps> = ({ data, onUpdateData })
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
       <div className="flex items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
-            <TargetIcon className="w-7 h-7 text-sky-600 dark:text-sky-400" />
+            <TargetIcon className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
             <h2 className="text-xl font-bold text-slate-900 dark:text-white">خطة الأداء</h2>
         </div>
         <div className="flex gap-2">
             {isEditing ? (
                 <>
-                    <button onClick={handleSave} className="px-3 py-1 bg-sky-600 text-white font-semibold text-sm rounded-md hover:bg-sky-700 transition-colors">حفظ</button>
+                    <button onClick={handleSave} className="px-3 py-1 bg-emerald-600 text-white font-semibold text-sm rounded-md hover:bg-emerald-700 transition-colors">حفظ</button>
                     <button onClick={handleCancel} className="px-3 py-1 bg-slate-200 dark:bg-slate-600 text-slate-700 dark:text-slate-200 font-semibold text-sm rounded-md hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors">إلغاء</button>
                 </>
             ) : (

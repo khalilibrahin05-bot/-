@@ -40,8 +40,8 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
         datasets: [{
           label: 'نسبة الإنجاز',
           data: chartData,
-          backgroundColor: 'rgba(14, 165, 233, 0.6)', // sky-500 with opacity
-          borderColor: 'rgba(14, 165, 233, 1)',
+          backgroundColor: 'rgba(244, 63, 94, 0.6)', // rose-500 with opacity
+          borderColor: 'rgba(244, 63, 94, 1)',
           borderWidth: 1,
           borderRadius: 4,
           barThickness: 'flex',
@@ -111,7 +111,7 @@ const ProgressChart: React.FC<ProgressChartProps> = ({ data }) => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700">
       <div className="flex items-center gap-3 mb-4">
-        <ChartBarIcon className="w-7 h-7 text-sky-600 dark:text-sky-400" />
+        <ChartBarIcon className="w-7 h-7 text-rose-600 dark:text-rose-400" />
         <h2 className="text-xl font-bold text-slate-900 dark:text-white">ملخص إنجاز المؤشرات</h2>
       </div>
       <div className="relative h-64">
