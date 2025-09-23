@@ -1,0 +1,12 @@
+:root {
+  --bg: #FBFBFB;
+  --text: #0F1724;
+  --muted: #6B7280;
+
+  --tasks-primary: #0B79D0;
+  --tasks-secondary: #79C1FF;
+  --learning-primary: #2CB67D;
+  --commerce-primary: #FF6B35;
+  --alerts-primary: #FFB300;
+  --profile-primary: #39404A;
+}
