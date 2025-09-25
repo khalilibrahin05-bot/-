@@ -1,16 +1,17 @@
 import React, { useState } from 'react';
 import { Indicator, IndicatorGroup } from '../types';
-import { CheckCircleIcon, ClipboardListIcon } from './icons';
+import { CheckCircleIcon, ClipboardListIcon, ExclamationCircleIcon } from './icons';
 
 interface IndicatorChecklistProps {
   data: IndicatorGroup[];
   onToggle: (groupIdx: number, indicatorIdx: number) => void;
   onUpdateNotes: (groupIdx: number, indicatorIdx: number, notes: string) => void;
+  onUpdateDueDate: (groupIdx: number, indicatorIdx: number, dueDate: string) => void;
 }
 
 type SortOption = 'default' | 'alpha' | 'status';
 
-const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle, onUpdateNotes }) => {
+const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle, onUpdateNotes, onUpdateDueDate }) => {
   const [expandedIndicatorId, setExpandedIndicatorId] = useState<number | null>(null);
   const [sortOrders, setSortOrders] = useState<Record<string, SortOption>>({});
 
@@ -21,6 +22,20 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
   const handleSortChange = (category: string, value: SortOption) => {
     setSortOrders(prev => ({ ...prev, [category]: value }));
   };
+
+  const isOverdue = (indicator: Indicator): boolean => {
+    if (indicator.completed || !indicator.dueDate) {
+        return false;
+    }
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const todayString = `${yyyy}-${mm}-${dd}`;
+    
+    return indicator.dueDate < todayString;
+  };
+
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-md p-6 border border-slate-200 dark:border-slate-700 h-full">
@@ -49,15 +64,16 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
               });
           }
 
-          // FIX: Explicitly type the initial value for the reduce function to prevent type inference issues. This avoids using a generic argument on .reduce() which can cause issues with some TS configurations.
-          const groupedByCategory = indicatorsWithOriginalIndex.reduce((acc, indicator) => {
+          // FIX: Replaced `reduce` with a `for...of` loop for grouping to avoid TypeScript inference issues.
+          // This ensures `groupedByCategory` is correctly typed, resolving the error on `indicators.map`.
+          const groupedByCategory: Record<string, (Indicator & { originalIndex: number })[]> = {};
+          for (const indicator of indicatorsWithOriginalIndex) {
             const category = indicator.category || 'مهام متنوعة';
-            if (!acc[category]) {
-              acc[category] = [];
+            if (!groupedByCategory[category]) {
+              groupedByCategory[category] = [];
             }
-            acc[category].push(indicator);
-            return acc;
-          }, {} as Record<string, (Indicator & { originalIndex: number })[]>);
+            groupedByCategory[category].push(indicator);
+          }
 
           return (
             <div key={groupIdx}>
@@ -89,7 +105,9 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
                   <div key={category}>
                     <h4 className="font-semibold text-sm text-slate-500 dark:text-slate-400 mb-2">{category}</h4>
                     <div className="space-y-2">
-                      {indicators.map((indicator) => (
+                      {indicators.map((indicator) => {
+                        const overdue = isOverdue(indicator);
+                        return (
                         <div key={indicator.id}>
                           <div className="flex items-start gap-3 group">
                             <div className="flex-shrink-0 mt-0.5">
@@ -106,8 +124,9 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
                                   </div>
                                 </label>
                             </div>
-                            <div className="flex-grow cursor-pointer" onClick={() => handleToggleExpand(indicator.id)}>
-                                <span className={`text-sm ${indicator.completed ? 'line-through text-slate-400 dark:text-slate-500' : 'text-slate-600 dark:text-slate-300'} transition-colors duration-200`}>
+                            <div className="flex-grow flex items-center gap-2 cursor-pointer" onClick={() => handleToggleExpand(indicator.id)}>
+                                {overdue && <ExclamationCircleIcon className="w-5 h-5 text-red-500 flex-shrink-0" title="This task is overdue" />}
+                                <span className={`text-sm ${indicator.completed ? 'line-through text-slate-400 dark:text-slate-500' : overdue ? 'text-red-600 dark:text-red-400 font-semibold' : 'text-slate-600 dark:text-slate-300'} transition-colors duration-200`}>
                                   {indicator.text}
                                 </span>
                             </div>
@@ -118,6 +137,17 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
                                     <div>
                                         <p className="font-semibold mb-1">تفاصيل إضافية:</p>
                                         <p>هنا يمكن إضافة وصف تفصيلي للمؤشر، معايير التحقق، الأدلة المطلوبة، والملاحظات الإشرافية المرتبطة به لضمان الوضوح والمتابعة الدقيقة.</p>
+                                    </div>
+                                     <div>
+                                        <label htmlFor={`dueDate-${indicator.id}`} className="font-semibold mb-1 block">تاريخ الاستحقاق:</label>
+                                        <input
+                                            id={`dueDate-${indicator.id}`}
+                                            type="date"
+                                            className="w-full bg-white dark:bg-slate-700 p-2 rounded-md border border-slate-300 dark:border-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-sm"
+                                            value={indicator.dueDate || ''}
+                                            onChange={(e) => onUpdateDueDate(groupIdx, indicator.originalIndex, e.target.value)}
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
                                     </div>
                                     <div>
                                         <label htmlFor={`notes-${indicator.id}`} className="font-semibold mb-1 block">ملاحظات إشرافية:</label>
@@ -134,7 +164,7 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
                                 </div>
                             </div>
                         </div>
-                      ))}
+                      )})}
                     </div>
                   </div>
                 ))}

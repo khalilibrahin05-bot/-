@@ -4,6 +4,7 @@ export interface Indicator {
   completed: boolean;
   category?: string;
   notes?: string;
+  dueDate?: string;
 }
 
 export interface IndicatorGroup {

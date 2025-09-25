@@ -28,6 +28,14 @@ function App() {
     });
   };
 
+  const handleUpdateIndicatorDueDate = (groupIdx: number, indicatorIdx: number, dueDate: string) => {
+    setIndicatorData(prevData => {
+      const newData = [...prevData.map(group => ({ ...group, indicators: [...group.indicators] }))];
+      newData[groupIdx].indicators[indicatorIdx].dueDate = dueDate;
+      return newData;
+    });
+  };
+
   const handleUpdatePlanData = (newPlanData: PlanItem[]) => {
     setPlanData(newPlanData);
   };
@@ -55,6 +63,7 @@ function App() {
                       data={indicatorData} 
                       onToggle={handleToggleIndicator} 
                       onUpdateNotes={handleUpdateIndicatorNotes}
+                      onUpdateDueDate={handleUpdateIndicatorDueDate}
                     />
                 </section>
             </main>
