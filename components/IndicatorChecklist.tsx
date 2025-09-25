@@ -49,6 +49,7 @@ const IndicatorChecklist: React.FC<IndicatorChecklistProps> = ({ data, onToggle,
               });
           }
 
+          // FIX: Explicitly type the initial value for the reduce function to prevent type inference issues. This avoids using a generic argument on .reduce() which can cause issues with some TS configurations.
           const groupedByCategory = indicatorsWithOriginalIndex.reduce((acc, indicator) => {
             const category = indicator.category || 'مهام متنوعة';
             if (!acc[category]) {

@@ -4,6 +4,7 @@ import IndicatorChecklist from './components/IndicatorChecklist';
 import PerformancePlan from './components/PerformancePlan';
 import AiSummary from './components/AiSummary';
 import ProgressChart from './components/ProgressChart';
+import SidebarNav from './components/SidebarNav';
 import { INITIAL_INDICATOR_DATA, PERFORMANCE_PLAN_DATA } from './constants';
 import { IndicatorGroup, PlanItem } from './types';
 
@@ -35,22 +36,29 @@ function App() {
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 p-4 sm:p-6 lg:p-8 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
         <Header />
-        <main className="mt-8 grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <div className="lg:col-span-5">
-             <AiSummary planData={planData} indicatorData={indicatorData} />
-          </div>
-          <div className="lg:col-span-3 space-y-8">
-            <PerformancePlan data={planData} onUpdateData={handleUpdatePlanData} />
-          </div>
-          <div className="lg:col-span-2 space-y-8">
-            <ProgressChart data={indicatorData} />
-            <IndicatorChecklist 
-              data={indicatorData} 
-              onToggle={handleToggleIndicator} 
-              onUpdateNotes={handleUpdateIndicatorNotes}
-            />
-          </div>
-        </main>
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8">
+            <aside className="lg:col-span-3 lg:sticky lg:top-8 self-start order-last lg:order-first">
+                <SidebarNav />
+            </aside>
+            <main className="lg:col-span-9 space-y-8">
+                <section id="ai-summary" className="scroll-mt-24">
+                    <AiSummary planData={planData} indicatorData={indicatorData} />
+                </section>
+                <section id="performance-plan" className="scroll-mt-24">
+                    <PerformancePlan data={planData} onUpdateData={handleUpdatePlanData} />
+                </section>
+                <section id="progress-chart" className="scroll-mt-24">
+                    <ProgressChart data={indicatorData} />
+                </section>
+                <section id="indicator-checklist" className="scroll-mt-24">
+                    <IndicatorChecklist 
+                      data={indicatorData} 
+                      onToggle={handleToggleIndicator} 
+                      onUpdateNotes={handleUpdateIndicatorNotes}
+                    />
+                </section>
+            </main>
+        </div>
         <footer className="text-center mt-12 text-sm text-slate-500 dark:text-slate-400">
           <p>إعداد: أ. خليل إبراهيم المخلافي</p>
         </footer>
